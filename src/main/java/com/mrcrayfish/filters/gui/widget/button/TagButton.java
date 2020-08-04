@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,15 +22,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TagButton extends Button
 {
-    private static final ResourceLocation TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
-
+    private ItemGroup group;
     private FilterEntry category;
     private ItemStack stack;
     private boolean toggled;
 
-    public TagButton(int x, int y, FilterEntry filter, IPressable pressable)
+    public TagButton(int x, int y, ItemGroup group, FilterEntry filter, IPressable pressable)
     {
         super(x, y, 32, 28, "", pressable);
+        this.group = group;
         this.category = filter;
         this.stack = filter.getIcon();
         this.toggled = filter.isEnabled();
@@ -52,7 +53,7 @@ public class TagButton extends Button
     public void renderButton(int mouseX, int mouseY, float partialTicks)
     {
         Minecraft mc = Minecraft.getInstance();
-        mc.getTextureManager().bindTexture(TABS);
+        mc.getTextureManager().bindTexture(this.group.getTabsImage());
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.disableLighting();
         RenderSystem.enableBlend();

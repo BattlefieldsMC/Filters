@@ -237,7 +237,7 @@ public class Events
             int scroll = scrollMap.computeIfAbsent(group, group1 -> 0);
             for(int i = scroll; i < scroll + 4 && i < entries.size(); i++)
             {
-                TagButton button = new TagButton(screen.getGuiLeft() - 28, screen.getGuiTop() + 29 * (i - scroll) + 10, entries.get(i), button1 -> this.updateItems(screen));
+                TagButton button = new TagButton(screen.getGuiLeft() - 28, screen.getGuiTop() + 29 * (i - scroll) + 10, group, entries.get(i), button1 -> this.updateItems(screen));
                 this.buttons.add(button);
             }
             this.btnScrollUp.active = scroll > 0;
