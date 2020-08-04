@@ -41,7 +41,7 @@ public class FilterEntry
 
     public String getName()
     {
-        return I18n.format(this.translationKey);
+        return I18n.hasKey(this.translationKey) ? I18n.format(this.translationKey) : this.tag.toString();
     }
 
     public void setEnabled(boolean enabled)
