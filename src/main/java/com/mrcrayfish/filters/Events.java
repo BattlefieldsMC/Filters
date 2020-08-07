@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,6 +20,7 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.GuiContainerEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
@@ -269,8 +271,37 @@ public class Events
                             filteredItems.addAll(filter.getItems());
                         }
                     }
-                    container.itemList.removeIf(stack -> !filteredItems.contains(stack.getItem()));
+                    NonNullList<ItemStack> filteredStacks = NonNullList.create();
+                    filteredItems.forEach(item -> item.fillItemGroup(group, filteredStacks));
+//                    container.itemList.removeIf(stack ->
+//                    {
+//                        System.out.println(filteredStacks.contains(stack));
+//                        return !filteredStacks.contains(stack);
+//                    });
+
+                    container.itemList.clear();
+                    group.fill(container.itemList);
+
+                    Iterator<ItemStack> each = container.itemList.iterator();
+                    while (each.hasNext())
+                    {
+                        ItemStack next = each.next();
+                        boolean remove = true;
+                        for (ItemStack filteredStack : filteredStacks)
+                        {
+                            if (filteredStack.equals(next, false))
+                            {
+                                remove = false;
+                                break;
+                            }
+                        }
+                        if (remove)
+                            each.remove();
+                    }
+
                     container.scrollTo(0);
+                    ObfuscationReflectionHelper.setPrivateValue(CreativeScreen.class, screen, 0, "field_147067_x");
+
                 }
             }
         }
